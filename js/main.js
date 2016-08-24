@@ -1,4 +1,5 @@
 var file;
+var output = document.getElementById("textarea");
 function getValue() {
     var userAccount = document.getElementById("userInput");
     function sendRedditRequest(file, callback) {
@@ -26,10 +27,10 @@ function getValue() {
         var length = data.data.children.length;
         for (var i = 0; i < length; i++) {
             var temp = data.data.children[i].data.body;
-            var results = results + temp;
+            var results = results + " " + temp;
         }
         analysis(results);
-        //console.log(results);
+        console.log(results);
     });
     //console.log(comments);
 }
@@ -47,29 +48,36 @@ function analysis(param) {
         });
     }
     sendUclassifyRequest(file, function (scores) {
-        var res = scores["65-100"];
-        console.log(res);
+        var g1 = scores["13-17"];
+        var g2 = scores["18-25"];
+        var g3 = scores["26-35"];
+        var g4 = scores["36-50"];
+        var g5 = scores["51-65"];
+        var g6 = scores["65-100"];
+        var array = [g1, g2, g3, g4, g5, g6];
+        var biggest = Math.max.apply(Math, array);
+        console.log(biggest);
+        switch (biggest) {
+            case g1:
+                output.innerHTML = "You are 13-17";
+                break;
+            case g2:
+                output.innerHTML = "you are 18-25";
+                break;
+            case g3:
+                console.log("you are 26-35");
+                break;
+            case g4:
+                output.innerHTML = "you are 36-50";
+                break;
+            case g5:
+                output.innerHTML = "you are 51-65";
+                break;
+            case g6:
+                output.innerHTML = "you are 65-100";
+                break;
+            default:
+                console.log("bung");
+        }
     });
 }
-/*function analyze(){
-    var form = new FormData();
-    form.append("txt", "Hello there mate");
-
-    function requestAnalysis(){
-        $.ajax({
-            url: "http://sentiment.vivekn.com/api/text/",
-            method: "POST",
-            mimeType: "multipart/form-data",
-            data: form,
-            processData: false
-        })
-        .done(function (data) {
-                console.log("Done");
-                console.log(data.result.sentiment);
-                
-
-            })
-    }
-    requestAnalysis();
-}
-analyze();*/ 
