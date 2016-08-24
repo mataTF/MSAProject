@@ -1,8 +1,10 @@
 var file;
 var output = document.getElementById("textarea");
 function getValue() {
+    //Called when user clicks the button
     var userAccount = document.getElementById("userInput");
     function sendRedditRequest(file, callback) {
+        //Request latest comments from a reddit user. User is defined by input from the textbox
         $.ajax({
             url: "https://www.reddit.com/user/" + userAccount.value + "/comments/.json",
             type: "GET",
@@ -10,20 +12,11 @@ function getValue() {
             processData: false
         })
             .done(function (data) {
-            var length = data.data.children.length;
-            //for(var i =0; i<length; i++){
-            //console.log(data.data.children[i].data.body);
-            //var comments = data.data.children[i].data.body.val;
-            //analyze(comments);
-            //}
             callback(data);
-            //analyze(comments);
         });
     }
     sendRedditRequest(file, function (data) {
-        //var comments = data.data.children[1].data.body;
-        //console.log(comments);
-        //analyze();
+        //Call request function and put all comment data into one big string for analysis
         var length = data.data.children.length;
         for (var i = 0; i < length; i++) {
             var temp = data.data.children[i].data.body;
@@ -32,7 +25,6 @@ function getValue() {
         analysis(results);
         console.log(results);
     });
-    //console.log(comments);
 }
 ;
 function analysis(param) {
@@ -48,6 +40,7 @@ function analysis(param) {
         });
     }
     sendUclassifyRequest(file, function (scores) {
+        //Shitty sort method
         var g1 = scores["13-17"];
         var g2 = scores["18-25"];
         var g3 = scores["26-35"];

@@ -2,9 +2,11 @@ var file;
 var output : HTMLParagraphElement = <HTMLParagraphElement> document.getElementById("textarea");
 
 function getValue(){
+    //Called when user clicks the button
     var userAccount : HTMLInputElement = <HTMLInputElement> document.getElementById("userInput");
 
     function sendRedditRequest(file, callback) : void {
+        //Request latest comments from a reddit user. User is defined by input from the textbox
         $.ajax({
             url: "https://www.reddit.com/user/"+ userAccount.value + "/comments/.json",
             type: "GET",
@@ -12,36 +14,22 @@ function getValue(){
             processData: false
         })
         .done(function (data) {
-                var length = data.data.children.length;
-
-                //for(var i =0; i<length; i++){
-                //console.log(data.data.children[i].data.body);
-                //var comments = data.data.children[i].data.body.val;
-                //analyze(comments);
-                //}
                 callback(data);
-                //analyze(comments);
-
             })
     }
 
     sendRedditRequest(file,function(data){
-        //var comments = data.data.children[1].data.body;
-        //console.log(comments);
-        //analyze();
-
+        //Call request function and put all comment data into one big string for analysis
         var length = data.data.children.length;
 
         for(var i =0; i<length; i++){
                 var temp: string = data.data.children[i].data.body;
                 var results: string = results + " " + temp;
                 }
-                
-                analysis(results);
-                console.log(results);
 
+        analysis(results);
+        console.log(results);
     });
-    //console.log(comments);
 };
 
 function analysis(param){
@@ -58,19 +46,18 @@ function analysis(param){
             })
     }
     sendUclassifyRequest(file, function(scores){
+        //Shitty sort method
+        var g1: number = scores["13-17"];
+        var g2: number = scores["18-25"];
+        var g3: number = scores["26-35"];
+        var g4: number = scores["36-50"];
+        var g5: number = scores["51-65"];
+        var g6: number = scores["65-100"];
 
-        var g1 = scores["13-17"];
-        var g2 = scores["18-25"];
-        var g3 = scores["26-35"];
-        var g4 = scores["36-50"];
-        var g5 = scores["51-65"];
-        var g6 = scores["65-100"];
-
-        var array = [g1,g2,g3,g4,g5,g6];
-        var biggest = Math.max.apply(Math, array);
+        var array: number [] = [g1,g2,g3,g4,g5,g6];
+        var biggest: number = Math.max.apply(Math, array);
         console.log(biggest);
         switch(biggest){
-
             case g1:
                 output.innerHTML = "You are 13-17";
                 break;

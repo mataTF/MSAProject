@@ -1,14 +1,56 @@
 <!DOCTYPE html>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css\styles.css">
 
 </head>
 
 <body>
-    <input id="userInput" type="text"></input>
+    <!--<input id="userInput" type="text"></input>
     <button type="button" id="button" onclick='getValue()'>Press</button>
-    <p id="textarea"> </p>
+    <p id="textarea"> </p>-->
     
+
+
+    <div class="container-full">
+
+      <div class="row">
+       
+        <div class="col-lg-12 text-center v-center">
+          
+          <h1>Guess my age</h1>
+          <p class="lead">Enter your Reddit username</p>
+          
+          <br>
+          
+          <form class="col-lg-12">
+            <div class="input-group input-group-lg col-sm-offset-4 col-sm-4">
+              <input type="text" id="userInput" class="center-block form-control input-lg" title="Enter you email." placeholder="Enter your username">
+              <span class="input-group-btn"><button id="button" class="btn btn-lg btn-primary" type="button" onclick="getValue()">OK</button></span>
+            </div>
+          </form>
+        </div>
+        
+      </div> <!-- /row -->
+  
+  	  <div class="row">
+       
+        <div class="col-lg-12 text-center v-center" style="font-size:39pt;">
+          <p id="textarea"> </p>
+        </div>
+      
+      </div>
+  
+  	<br><br><br><br><br>
+
+</div> <!-- /container full -->
+
+
+
+
+
+
+
     <script src="js\main.js"></script>
 </body>
