@@ -17,8 +17,8 @@ function getValue() {
     }
     sendRedditRequest(file, function (data) {
         //Call request function and put all comment data into one big string for analysis
-        var length = data.data.children.length;
-        for (var i = 0; i < length; i++) {
+        //var length = data.data.children.length;
+        for (var i = 0; i < 10; i++) {
             var temp = data.data.children[i].data.body;
             var results = results + " " + temp;
         }
@@ -29,6 +29,7 @@ function getValue() {
 ;
 function analysis(param) {
     function sendUclassifyRequest(file, callback) {
+        //May be better to use POST
         $.ajax({
             url: "https://api.uclassify.com/v1/uclassify/ageanalyzer/Classify?readkey=FWCr4N9FAiiD&text=" + param,
             type: "GET",
@@ -52,25 +53,28 @@ function analysis(param) {
         console.log(biggest);
         switch (biggest) {
             case g1:
-                output.innerHTML = "You are 13-17";
+                writeResult("a Child"); //13-17
                 break;
             case g2:
-                output.innerHTML = "you are 18-25";
+                writeResult("a 18-25 year old"); //18-25
                 break;
             case g3:
-                console.log("you are 26-35");
+                writeResult("a 26-35 year old"); //26-35
                 break;
             case g4:
-                output.innerHTML = "you are 36-50";
+                writeResult("a Middle aged person"); //36-50
                 break;
             case g5:
-                output.innerHTML = "you are 51-65";
+                writeResult("You are approaching retirement"); //51-65
                 break;
             case g6:
-                output.innerHTML = "you are 65-100";
+                writeResult("a Senior citizen");
                 break;
             default:
                 console.log("bung");
         }
     });
+}
+function writeResult(ageGroup) {
+    output.innerHTML = "You write like " + ageGroup;
 }
