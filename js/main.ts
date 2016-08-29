@@ -1,6 +1,7 @@
 var file;
 var output : HTMLParagraphElement = <HTMLParagraphElement> document.getElementById("textarea");
 var gender: string = "neutral";
+var sentiment: string = "none";
 
 function getValue(){
     //Called when user clicks the button
@@ -44,17 +45,18 @@ function getValue(){
 function analysis(param){
 
     function sendAgeRequest(file, callback) : void {
-        //May be better to use POST
+
         var settings = {
             "async": true,
             "crossDomain": true,
-            "url": "http://api.datumbox.com/1.0/GenderDetection.json?api_key=dfd1797a759929a7a7a7b23970f18c44",
+            "url": "http://api.datumbox.com/1.0/GenderDetection.json",
             "method": "POST",
             "headers": {
                 "content-type": "application/x-www-form-urlencoded"
             },
             "data": {
-                "text": param
+                "text": param,
+                "api_key": "dfd1797a759929a7a7a7b23970f18c44"
             }
         }
 
@@ -76,21 +78,70 @@ $.ajax(settings).done(function (response) {
         }
     );  
         
-writeResult();
- 
+function sendSentimentRequest(file, callback) : void {
+
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "http://api.datumbox.com/1.0/SentimentAnalysis.json",
+            "method": "POST",
+            "headers": {
+                "content-type": "application/x-www-form-urlencoded"
+            },
+            "data": {
+                "text": param,
+                "api_key": "dfd1797a759929a7a7a7b23970f18c44"
+            }
+        }
+
+$.ajax(settings).done(function (response) {
+  callback(response);
+});
+    }
+    sendSentimentRequest(file, function(data){
+        
+        if(data.output.result == "positive"){
+            sentiment = "positive";
+        }
+        else if(data.output.result == "negative")
+        {
+            sentiment = "negative";
+        }
+        else{
+            sentiment = "neutral";
+        }
+        writeResult();
+    }); 
 }
 
 function writeResult() {
-    //output.innerHTML = "You write like " + ageGroup;
     var ending: string = "";
     var img : HTMLImageElement = <HTMLImageElement> $("#image")[0];
-
+    console.log(sentiment);
     if(gender == "male"){
-        ending = "Guy";
+        if(sentiment == "positive"){
+            ending = "positive man";
+        }
+        else if(sentiment == "negative"){
+            ending = "negative guy";
+        }
+        else{
+            ending = ending = "Guy";
+            console.log("worked but neutral");
+        }
     }
     else
     {
-        ending = "Girl";
+        if(sentiment == "positive"){
+            ending = "positive lass";
+        }
+        else if(sentiment == "negative"){
+            ending = "negative female";
+        }
+        else{
+            ending = ending = "Girl";
+            console.log("worked but neutral");
+        }
     }
 
     output.innerHTML = "You write like " + ending;
