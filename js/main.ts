@@ -1,11 +1,17 @@
 var file;
 var output : HTMLParagraphElement = <HTMLParagraphElement> document.getElementById("textarea");
+var feelsOutput : HTMLParagraphElement = <HTMLParagraphElement> document.getElementById("feelsarea");
 var gender: string = "neutral";
 var sentiment: string = "none";
 
 function getValue(){
     //Called when user clicks the button
+
+    buttonColor();
     var userAccount : HTMLInputElement = <HTMLInputElement> document.getElementById("userInput");
+
+    output.innerHTML = "Analyzing Reddit account...";
+    feelsOutput.innerHTML = "";
 
     function sendRedditRequest(file, callback) : void {
         //Request latest comments from a reddit user. User is defined by input from the textbox
@@ -24,16 +30,33 @@ function getValue(){
             }
         })
         .fail(function (error) {
-            output.innerHTML = "Try again soon";
+            if(error.status == "404"){
+                output.innerHTML = "User not found";
+            }
+            else {
+                output.innerHTML = "Try again soon";
+            }
             console.log(error.getAllResponseHeaders());
+            $("button").attr("id","button");
+            $("button").css("background-color","#69BE28");
 });
     }
 
     sendRedditRequest(file,function(data){
         //Call request function and put all comment data into one big string for analysis
-        
-        //var length = data.data.children.length;
-        for(var i = 0; i<10; i++){
+        var counter: number = 12;
+        var length: number = data.data.children.length;
+        if(length == 0){
+            output.innerHTML = "User has no comments";
+            $("button").attr("id","button");
+            $("button").css("background-color","#69BE28");
+            return;            //just incase the user has less than 12 comments or no comments at all
+        }
+        else if(length<counter){
+            counter = data.data.children.length;
+        }
+
+        for(var i = 0; i<counter; i++){
                 var temp: string = data.data.children[i].data.body;
                 var results: string = results + " " + temp;
                 }
@@ -110,42 +133,47 @@ $.ajax(settings).done(function (response) {
         else{
             sentiment = "neutral";
         }
+        
         writeResult();
+        feelsResult();
+        
     }); 
 }
 
 function writeResult() {
     var ending: string = "";
-    var img : HTMLImageElement = <HTMLImageElement> $("#image")[0];
+
     console.log(sentiment);
     if(gender == "male"){
-        if(sentiment == "positive"){
-            ending = "positive man";
-        }
-        else if(sentiment == "negative"){
-            ending = "negative guy";
-        }
-        else{
-            ending = ending = "Guy";
-            console.log("worked but neutral");
-        }
+        
+        ending = "guy";
     }
     else
     {
-        if(sentiment == "positive"){
-            ending = "positive lass";
-        }
-        else if(sentiment == "negative"){
-            ending = "negative female";
-        }
-        else{
-            ending = ending = "Girl";
-            console.log("worked but neutral");
-        }
+        ending = "girl";
     }
 
     output.innerHTML = "You write like " + ending;
+    $("button").attr("id","button");
+    $("button").css("background-color","#69BE28");
 }
+
+function feelsResult(){
+    if(sentiment == "positive"){
+        feelsOutput.innerHTML = "Feels Rating: POSITIVE";
+        $("#alien").attr("src","images/reddit-h.png");
+    }
+    else if(sentiment == "negative"){
+        feelsOutput.innerHTML = "Feels Rating: NEGATIVE";
+        $("#alien").attr("src","images/reddit-s.png");
+    }
+    else{
+        feelsOutput.innerHTML = "Feels Rating: MEH";
+        $("#alien").attr("src","images/reddit-meh.png");
+    }
+
+}
+
 //So you can press enter as well as clicking the button
 $('#userInput').keypress(function(e) {
     if (e.which == 13) {
@@ -153,3 +181,7 @@ $('#userInput').keypress(function(e) {
         e.preventDefault();
     }
 });
+
+function buttonColor(){
+    $("button").attr("id","buttonloading");
+}

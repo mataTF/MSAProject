@@ -1,12 +1,12 @@
 @import url(https://fonts.googleapis.com/css?family=Indie+Flower);
-@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
 html,body {
   height:100%;
 }
 
 h1 {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-size:80px;
   color:#69BE28;
 }
@@ -20,7 +20,7 @@ p {
 }
 
 #button {
-  background-color: #69BE28;
+  background-color: #ff0000;
   border: none;
 }
 
@@ -48,4 +48,81 @@ img#image{
     padding:20px;
     display:none;
     margin: 0 auto;
+}
+
+#buttonloading{
+    background-color: #ff0000;
+    border: none;
+
+    animation-name: cycle;
+    animation-duration:0.5s;
+    animation-direction:alternate;
+    animation-iteration-count:infinite;
+
+    -webkit-animation-name: cycle;
+    -webkit-animation-duration:0.5s;
+    -webkit-animation-direction:alternate;
+    -webkit-animation-iteration-count:infinite; 
+
+    -moz-animation-name: cycle;
+    -moz-animation-duration:0.5s;
+    -moz-animation-direction:alternate;
+    -moz-animation-iteration-count:infinite;
+
+    -o-animation-name: cycle;
+    -o-animation-duration:0.5s;
+    -o-animation-direction:alternate;
+    -o-animation-iteration-count:infinite;
+}
+
+@keyframes cycle
+{
+    0% {background-color:#ff0000;}
+    10% {background-color:#ff4000;}
+    20% {background-color:#ff8000;}
+    30% {background-color:#ffbf00;}
+    40% {background-color:#ffff00;}
+    50% {background-color:#ffbf00;}
+    60% {background-color:#ff8000;}
+    70% {background-color:#ff4000;}
+    80% {background-color:#ff0000;}
+}
+
+@-webkit-keyframes cycle
+{
+    0% {background-color:#ff0000;}
+    10% {background-color:#ff4000;}
+    20% {background-color:#ff8000;}
+    30% {background-color:#ffbf00;}
+    40% {background-color:#ffff00;}
+    50% {background-color:#ffbf00;}
+    60% {background-color:#ff8000;}
+    70% {background-color:#ff4000;}
+    80% {background-color:#ff0000;}
+}
+
+@-moz-keyframes cycle
+{
+    0% {background-color:#ff0000;}
+    10% {background-color:#ff4000;}
+    20% {background-color:#ff8000;}
+    30% {background-color:#ffbf00;}
+    40% {background-color:#ffff00;}
+    50% {background-color:#ffbf00;}
+    60% {background-color:#ff8000;}
+    70% {background-color:#ff4000;}
+    80% {background-color:#ff0000;}
+}
+
+@-o-keyframes cycle
+{
+    0% {background-color:#ff0000;}
+    10% {background-color:#ff4000;}
+    20% {background-color:#ff8000;}
+    30% {background-color:#ffbf00;}
+    40% {background-color:#ffff00;}
+    50% {background-color:#ffbf00;}
+    60% {background-color:#ff8000;}
+    70% {background-color:#ff4000;}
+    80% {background-color:#ff0000;}
 }
