@@ -3,15 +3,17 @@ var output = document.getElementById("textarea");
 var feelsOutput = document.getElementById("feelsarea");
 var gender = "neutral";
 var sentiment = "none";
-var sound = new Audio("audio/found.wav");
-var sound2 = new Audio("audio/done.wav");
+var soundError = new Audio("audio/error.wav");
+var soundPositive = new Audio("audio/pos.wav");
+var soundNegative = new Audio("audio/neg.wav");
+var soundNeutral = new Audio("audio/neu.wav");
+var soundAlert = new Audio("audio/alert.wav");
 function getValue() {
-    //Called when user clicks the button
-    buttonColor();
     var userAccount = document.getElementById("userInput");
+    buttonColor();
     output.innerHTML = "Analyzing Reddit account...";
     feelsOutput.innerHTML = "";
-    $("#mgs").css("display", "none");
+    //Called when user clicks the button
     function sendRedditRequest(file, callback) {
         //Request latest comments from a reddit user. User is defined by input from the textbox
         $.ajax({
@@ -26,27 +28,24 @@ function getValue() {
             }
             else {
                 output.innerHTML = "Try again soon";
-                $("#mgs").css("display", "inline");
-                $("#alien").attr("src", "images/reddit-oh.png");
-                sound.play();
+                $("#alien").attr("src", "images/mgs.png");
+                soundError.play();
             }
         })
             .fail(function (error) {
             if (error.status == "404") {
                 output.innerHTML = "User not found";
-                $("#mgs").css("display", "inline");
-                $("#alien").attr("src", "images/reddit-oh.png");
-                sound.play();
+                $("#alien").attr("src", "images/mgs.png");
+                soundError.play();
             }
             else {
                 output.innerHTML = "Try again soon";
-                $("#mgs").css("display", "inline");
-                $("#alien").attr("src", "images/reddit-oh.png");
-                sound.play();
+                $("#alien").attr("src", "images/mgs.png");
+                soundError.play();
             }
             console.log(error.getAllResponseHeaders());
             $("button").attr("id", "button");
-            $("button").css("background-color", "#69BE28");
+            $("button").css("background-color", "#ff0000");
         });
     }
     sendRedditRequest(file, function (data) {
@@ -56,10 +55,9 @@ function getValue() {
         if (length == 0) {
             output.innerHTML = "User has no comments";
             $("button").attr("id", "button");
-            $("button").css("background-color", "#69BE28");
-            $("#mgs").css("display", "inline");
-            $("#alien").attr("src", "images/reddit-oh.png");
-            sound.play();
+            $("button").css("background-color", "#ff0000");
+            $("#alien").attr("src", "images/mgs.png");
+            soundError.play();
             return;
         }
         else if (length < counter) {
@@ -138,28 +136,30 @@ function writeResult() {
     var ending = "";
     console.log(sentiment);
     if (gender == "male") {
-        ending = "guy";
+        ending = "MALE";
     }
     else {
-        ending = "girl";
+        ending = "FEMALE";
     }
-    output.innerHTML = "You write like " + ending;
+    output.innerHTML = "You write like a " + ending;
     $("button").attr("id", "button");
     $("button").css("background-color", "#69BE28");
-    sound2.play();
 }
 function feelsResult() {
     if (sentiment == "positive") {
         feelsOutput.innerHTML = "Feels Rating: POSITIVE";
         $("#alien").attr("src", "images/reddit.png");
+        soundPositive.play();
     }
     else if (sentiment == "negative") {
         feelsOutput.innerHTML = "Feels Rating: NEGATIVE";
         $("#alien").attr("src", "images/reddit-sad.png");
+        soundNegative.play();
     }
     else {
         feelsOutput.innerHTML = "Feels Rating: MEH";
         $("#alien").attr("src", "images/reddit-meh.png");
+        soundNeutral.play();
     }
 }
 //So you can press enter as well as clicking the button

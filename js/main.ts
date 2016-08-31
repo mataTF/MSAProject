@@ -3,18 +3,20 @@ var output : HTMLParagraphElement = <HTMLParagraphElement> document.getElementBy
 var feelsOutput : HTMLParagraphElement = <HTMLParagraphElement> document.getElementById("feelsarea");
 var gender: string = "neutral";
 var sentiment: string = "none";
-var sound = new Audio("audio/found.wav");
-var sound2 = new Audio("audio/done.wav");
-
+var soundError = new Audio("audio/error.wav");
+var soundPositive = new Audio("audio/pos.wav");
+var soundNegative = new Audio("audio/neg.wav");
+var soundNeutral = new Audio("audio/neu.wav");
+var soundAlert = new Audio("audio/alert.wav");
 
 function getValue(){
-    //Called when user clicks the button
-    buttonColor();
-    var userAccount : HTMLInputElement = <HTMLInputElement> document.getElementById("userInput");
 
+    var userAccount : HTMLInputElement = <HTMLInputElement> document.getElementById("userInput");
+    buttonColor();
     output.innerHTML = "Analyzing Reddit account...";
     feelsOutput.innerHTML = "";
-    $("#mgs").css("display", "none");
+
+    //Called when user clicks the button
 
     function sendRedditRequest(file, callback) : void {
         //Request latest comments from a reddit user. User is defined by input from the textbox
@@ -30,28 +32,25 @@ function getValue(){
             }
             else {
                 output.innerHTML = "Try again soon";
-                $("#mgs").css("display", "inline");
-                $("#alien").attr("src","images/reddit-oh.png");
-                sound.play();
+                $("#alien").attr("src","images/mgs.png");
+                soundError.play();
             }
         })
         .fail(function (error) {
             if(error.status == "404"){
                 output.innerHTML = "User not found";
-                $("#mgs").css("display", "inline");
-                $("#alien").attr("src","images/reddit-oh.png");
-                sound.play();
+                $("#alien").attr("src","images/mgs.png");
+                soundError.play();
 
             }
             else {
                 output.innerHTML = "Try again soon";
-                $("#mgs").css("display", "inline");
-                $("#alien").attr("src","images/reddit-oh.png");
-                sound.play();
+                $("#alien").attr("src","images/mgs.png");
+                soundError.play();
             }
             console.log(error.getAllResponseHeaders());
             $("button").attr("id","button");
-            $("button").css("background-color","#69BE28");
+            $("button").css("background-color","#ff0000");
 });
     }
 
@@ -63,10 +62,9 @@ function getValue(){
             output.innerHTML = "User has no comments";
 
             $("button").attr("id","button");
-            $("button").css("background-color","#69BE28");
-            $("#mgs").css("display", "inline");
-            $("#alien").attr("src","images/reddit-oh.png");
-            sound.play();
+            $("button").css("background-color","#ff0000");
+            $("#alien").attr("src","images/mgs.png");
+            soundError.play();
             return;            
         }
         else if(length<counter){
@@ -163,31 +161,33 @@ function writeResult() {
     console.log(sentiment);
     if(gender == "male"){
         
-        ending = "guy";
+        ending = "MALE";
     }
     else
     {
-        ending = "girl";
+        ending = "FEMALE";
     }
 
-    output.innerHTML = "You write like " + ending;
+    output.innerHTML = "You write like a " + ending;
     $("button").attr("id","button");
     $("button").css("background-color","#69BE28");
-    sound2.play();
 }
 
 function feelsResult(){
     if(sentiment == "positive"){
         feelsOutput.innerHTML = "Feels Rating: POSITIVE";
         $("#alien").attr("src","images/reddit.png");
+        soundPositive.play();
     }
     else if(sentiment == "negative"){
         feelsOutput.innerHTML = "Feels Rating: NEGATIVE";
         $("#alien").attr("src","images/reddit-sad.png");
+        soundNegative.play();
     }
     else{
         feelsOutput.innerHTML = "Feels Rating: MEH";
         $("#alien").attr("src","images/reddit-meh.png");
+        soundNeutral.play();
     }
 
 }

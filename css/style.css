@@ -1,12 +1,12 @@
-@import url(https://fonts.googleapis.com/css?family=Indie+Flower);
-@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+@import url(https://fonts.googleapis.com/css?family=Share+Tech+Mono|VT323);
+@import url(https://fonts.googleapis.com/css?family=VT323);
 
 html,body {
   height:100%;
 }
 
 h1 {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'VT323', monospace;
   font-size:80px;
   color:#69BE28;
   margin-top: 8%;
@@ -14,7 +14,8 @@ h1 {
 }
 
 p {
-  font-family: 'Indie Flower', cursive;
+    font-family: 'VT323', monospace;
+    font-family: 'Share Tech Mono', monospace;
 }
 
 .lead {
@@ -30,7 +31,8 @@ p {
   margin: 0 auto;
   width: 100%;
   min-height:100%;
-  background-color:#002244;
+  /*background-color:#002244;*/
+  background-color: #1a1a1a;
   color:#eee;
   overflow:hidden;
 }
