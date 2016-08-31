@@ -3,12 +3,15 @@ var output = document.getElementById("textarea");
 var feelsOutput = document.getElementById("feelsarea");
 var gender = "neutral";
 var sentiment = "none";
+var sound = new Audio("audio/found.wav");
+var sound2 = new Audio("audio/done.wav");
 function getValue() {
     //Called when user clicks the button
     buttonColor();
     var userAccount = document.getElementById("userInput");
     output.innerHTML = "Analyzing Reddit account...";
     feelsOutput.innerHTML = "";
+    $("#mgs").css("display", "none");
     function sendRedditRequest(file, callback) {
         //Request latest comments from a reddit user. User is defined by input from the textbox
         $.ajax({
@@ -23,14 +26,23 @@ function getValue() {
             }
             else {
                 output.innerHTML = "Try again soon";
+                $("#mgs").css("display", "inline");
+                $("#alien").attr("src", "images/reddit-oh.png");
+                sound.play();
             }
         })
             .fail(function (error) {
             if (error.status == "404") {
                 output.innerHTML = "User not found";
+                $("#mgs").css("display", "inline");
+                $("#alien").attr("src", "images/reddit-oh.png");
+                sound.play();
             }
             else {
                 output.innerHTML = "Try again soon";
+                $("#mgs").css("display", "inline");
+                $("#alien").attr("src", "images/reddit-oh.png");
+                sound.play();
             }
             console.log(error.getAllResponseHeaders());
             $("button").attr("id", "button");
@@ -45,7 +57,10 @@ function getValue() {
             output.innerHTML = "User has no comments";
             $("button").attr("id", "button");
             $("button").css("background-color", "#69BE28");
-            return; //just incase the user has less than 12 comments or no comments at all
+            $("#mgs").css("display", "inline");
+            $("#alien").attr("src", "images/reddit-oh.png");
+            sound.play();
+            return;
         }
         else if (length < counter) {
             counter = data.data.children.length;
@@ -131,15 +146,16 @@ function writeResult() {
     output.innerHTML = "You write like " + ending;
     $("button").attr("id", "button");
     $("button").css("background-color", "#69BE28");
+    sound2.play();
 }
 function feelsResult() {
     if (sentiment == "positive") {
         feelsOutput.innerHTML = "Feels Rating: POSITIVE";
-        $("#alien").attr("src", "images/reddit-h.png");
+        $("#alien").attr("src", "images/reddit.png");
     }
     else if (sentiment == "negative") {
         feelsOutput.innerHTML = "Feels Rating: NEGATIVE";
-        $("#alien").attr("src", "images/reddit-s.png");
+        $("#alien").attr("src", "images/reddit-sad.png");
     }
     else {
         feelsOutput.innerHTML = "Feels Rating: MEH";

@@ -9,6 +9,8 @@ h1 {
   font-family: 'Open Sans', sans-serif;
   font-size:80px;
   color:#69BE28;
+  margin-top: 8%;
+  margin-bottom: 4%;
 }
 
 p {
@@ -38,17 +40,32 @@ p {
   text-decoration:none;
 }
 
-.v-center {
-  margin-top:7%;
+img#alien{
+    position: relative;
+    width:100px;
+    height:100px;
+    float: left;
+    margin-left:2.5%;
 }
 
-img#image{
-    width:150px;
-    height:150px;
-    padding:20px;
-    display:none;
-    margin: 0 auto;
+img#mgs{
+    position: absolute;
+    top: -45%;
+    left: 64.8%;
+    width:50px;
+    height:50px;
+    float: left;
+    margin-left:2.5%;
+    display: none;
 }
+
+#inputDiv{
+    float: left;
+    margin-left: 30%;
+    margin-top: 2.5%;
+    margin-bottom: 2.5%;
+}
+
 
 #buttonloading{
     background-color: #ff0000;
