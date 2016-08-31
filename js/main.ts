@@ -1,11 +1,20 @@
 var file;
 var output : HTMLParagraphElement = <HTMLParagraphElement> document.getElementById("textarea");
+var feelsOutput : HTMLParagraphElement = <HTMLParagraphElement> document.getElementById("feelsarea");
 var gender: string = "neutral";
-var ageGroup: string = "none";
+var sentiment: string = "none";
+var sound = new Audio("audio/found.wav");
+var sound2 = new Audio("audio/done.wav");
+
 
 function getValue(){
     //Called when user clicks the button
+    buttonColor();
     var userAccount : HTMLInputElement = <HTMLInputElement> document.getElementById("userInput");
+
+    output.innerHTML = "Analyzing Reddit account...";
+    feelsOutput.innerHTML = "";
+    $("#mgs").css("display", "none");
 
     function sendRedditRequest(file, callback) : void {
         //Request latest comments from a reddit user. User is defined by input from the textbox
@@ -21,194 +30,168 @@ function getValue(){
             }
             else {
                 output.innerHTML = "Try again soon";
+                $("#mgs").css("display", "inline");
+                $("#alien").attr("src","images/reddit-oh.png");
+                sound.play();
             }
         })
         .fail(function (error) {
-            output.innerHTML = "Try again soon";
+            if(error.status == "404"){
+                output.innerHTML = "User not found";
+                $("#mgs").css("display", "inline");
+                $("#alien").attr("src","images/reddit-oh.png");
+                sound.play();
+
+            }
+            else {
+                output.innerHTML = "Try again soon";
+                $("#mgs").css("display", "inline");
+                $("#alien").attr("src","images/reddit-oh.png");
+                sound.play();
+            }
             console.log(error.getAllResponseHeaders());
+            $("button").attr("id","button");
+            $("button").css("background-color","#69BE28");
 });
     }
 
     sendRedditRequest(file,function(data){
         //Call request function and put all comment data into one big string for analysis
-        
-        //var length = data.data.children.length;
-        for(var i = 0; i<10; i++){
+        var counter: number = 12;
+        var length: number = data.data.children.length;
+        if(length == 0){                                    //just incase the user has less than 12 comments or no comments at all
+            output.innerHTML = "User has no comments";
+
+            $("button").attr("id","button");
+            $("button").css("background-color","#69BE28");
+            $("#mgs").css("display", "inline");
+            $("#alien").attr("src","images/reddit-oh.png");
+            sound.play();
+            return;            
+        }
+        else if(length<counter){
+            counter = data.data.children.length;
+        }
+
+        for(var i = 0; i<counter; i++){
                 var temp: string = data.data.children[i].data.body;
                 var results: string = results + " " + temp;
                 }
 
         analysis(results);
-        console.log(results);
     });
 };
 
 function analysis(param){
 
     function sendAgeRequest(file, callback) : void {
-        //May be better to use POST
-        $.ajax({
-            url: "https://api.uclassify.com/v1/uclassify/ageanalyzer/Classify?readkey=FWCr4N9FAiiD&text=" + param,
-            type: "GET",
-            data: file,
-            processData: false
-        })
-        .done(function (data) {
-            if(data.length != 0){
-                callback(data);
-            }
-            else {
-                output.innerHTML = "Try again soon";
-            }
-        })
-        .fail(function (error) {
-            output.innerHTML = "Try again soon";
-            console.log(error.getAllResponseHeaders());
-        });
-    }
-    sendAgeRequest(file, function(scores){
-        //Shitty sort method
-        var g1: number = scores["13-17"];
-        var g2: number = scores["18-25"];
-        var g3: number = scores["26-35"];
-        var g4: number = scores["36-50"];
-        var g5: number = scores["51-65"];
-        var g6: number = scores["65-100"];
 
-        var array: number [] = [g1,g2,g3,g4,g5,g6];
-        var biggest: number = Math.max.apply(Math, array);
-        //console.log(biggest);
-        switch(biggest){
-            case g1:
-                //writeResult("a Child");     //13-17
-                ageGroup = "13-17";
-                break;
-            case g2:
-                //writeResult("a 18-25 year old");     //18-25
-                ageGroup = "18-25";
-                break;
-            case g3:
-                //writeResult("a 26-35 year old");     //26-35
-                ageGroup = "26-35";
-                break;
-            case g4:
-                //writeResult("a Middle aged person");     //36-50
-                ageGroup = "36-50";
-                break;
-            case g5:
-                //writeResult("You are approaching retirement");     //51-65
-                ageGroup = "51-65";
-                break;
-            case g6:
-                //writeResult("a Senior citizen");
-                ageGroup = "65-100";
-                break;
-            default:
-                console.log("bung");
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "http://api.datumbox.com/1.0/GenderDetection.json",
+            "method": "POST",
+            "headers": {
+                "content-type": "application/x-www-form-urlencoded"
+            },
+            "data": {
+                "text": param,
+                "api_key": "dfd1797a759929a7a7a7b23970f18c44"
+            }
         }
-    });
 
-    function sendGenderRequest(file, callback) : void {
-        //May be better to use POST
-        $.ajax({
-            url: "https://api.uclassify.com/v1/uclassify/genderanalyzer_v5/Classify?readkey=FWCr4N9FAiiD&text=" + param,
-            type: "GET",
-            data: file,
-            processData: false
-        })
-        .done(function (data) {
-                if(data.length != 0){
-                callback(data);
-            }
-            else {
-                output.innerHTML = "Try again soon";
-            }
-        })
-        .fail(function (error) {
-            output.innerHTML = "Try again soon";
-            console.log(error.getAllResponseHeaders());
-        });
+$.ajax(settings).done(function (response) {
+  callback(response);
+});
     }
-    sendGenderRequest(file, function(scores){
-        //console.log(scores);
-        var male: number = scores["male"];
-        var female: number = scores["female"];
-        var array: number [] = [male, female];
-        var biggest: number = Math.max.apply(Math, array);
+    sendAgeRequest(file, function(data){
         
-        switch(biggest){
-            case male:
-                gender = "male";
-                break;
-            case female:
-                gender = "female";
-                break;
-            default:
-                console.log("Bung genderreq");
+        if(data.output.result == "male"){
+            console.log("working");
+            gender = "male";
         }
+        else{
+            console.log("working");
+            gender = "female";
+        }
+
+        }
+    );  
+        
+function sendSentimentRequest(file, callback) : void {
+
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "http://api.datumbox.com/1.0/SentimentAnalysis.json",
+            "method": "POST",
+            "headers": {
+                "content-type": "application/x-www-form-urlencoded"
+            },
+            "data": {
+                "text": param,
+                "api_key": "dfd1797a759929a7a7a7b23970f18c44"
+            }
+        }
+
+$.ajax(settings).done(function (response) {
+  callback(response);
+});
+    }
+    sendSentimentRequest(file, function(data){
+        
+        if(data.output.result == "positive"){
+            sentiment = "positive";
+        }
+        else if(data.output.result == "negative")
+        {
+            sentiment = "negative";
+        }
+        else{
+            sentiment = "neutral";
+        }
+        
         writeResult();
-    })  
+        feelsResult();
+        
+    }); 
 }
 
 function writeResult() {
-    //output.innerHTML = "You write like " + ageGroup;
-    console.log(gender);
-    console.log(ageGroup);
     var ending: string = "";
-    var img : HTMLImageElement = <HTMLImageElement> $("#image")[0];
 
-    if(gender === "male"){
-        switch(ageGroup){
-            case "13-17":
-                ending = "a little boy" ;
-                break;
-            case "18-25":
-                ending = "an 18-25 year old man";
-                break;
-            case "26-35":
-                ending = "a 26-35 year old man";
-                break;
-            case "36-50":
-                ending = "a 36-50 year old man";
-                break;
-            case "51-65":
-                ending = "an old man approaching retirement";
-                break;
-            case "65-100":
-                ending = "an elderly man";
-                break;
-            default:
-                console.log("bung writesresult male");
-        }
+    console.log(sentiment);
+    if(gender == "male"){
+        
+        ending = "guy";
     }
-    else {
-        switch(ageGroup) {
-            case "13-17":
-                ending = "a little girl" ;
-                break;
-            case "18-25":
-                ending = "an 18-25 year old woman";
-                break;
-            case "26-35":
-                ending = "a 26-35 year old woman";
-                break;
-            case "36-50":
-                ending = "a 36-50 year old woman";
-                break;
-            case "51-65":
-                ending = "an old woman approaching retirement";
-                break;
-            case "65-100":
-                ending = "an elderly lady";
-                //img.src = "https://imgflip.com/s/meme/Grandma-Finds-The-Internet.jpg";
-                //img.style.display = "block";
-                break;
-            default:
-                console.log("bung writeresult else");
-        }
+    else
+    {
+        ending = "girl";
     }
+
     output.innerHTML = "You write like " + ending;
+    $("button").attr("id","button");
+    $("button").css("background-color","#69BE28");
+    sound2.play();
 }
+
+function feelsResult(){
+    if(sentiment == "positive"){
+        feelsOutput.innerHTML = "Feels Rating: POSITIVE";
+        $("#alien").attr("src","images/reddit.png");
+    }
+    else if(sentiment == "negative"){
+        feelsOutput.innerHTML = "Feels Rating: NEGATIVE";
+        $("#alien").attr("src","images/reddit-sad.png");
+    }
+    else{
+        feelsOutput.innerHTML = "Feels Rating: MEH";
+        $("#alien").attr("src","images/reddit-meh.png");
+    }
+
+}
+
 //So you can press enter as well as clicking the button
 $('#userInput').keypress(function(e) {
     if (e.which == 13) {
@@ -216,3 +199,7 @@ $('#userInput').keypress(function(e) {
         e.preventDefault();
     }
 });
+
+function buttonColor(){
+    $("button").attr("id","buttonloading");
+}
