@@ -11,9 +11,8 @@ var soundAlert = new Audio("audio/alert.wav");
 function getValue() {
     var userAccount = document.getElementById("userInput");
     buttonColor();
-    output.innerHTML = "Analyzing Reddit account...";
+    output.innerHTML = "Analyzing Reddit account..."; //Reset outputs
     feelsOutput.innerHTML = "";
-    //Called when user clicks the button
     function sendRedditRequest(file, callback) {
         //Request latest comments from a reddit user. User is defined by input from the textbox
         $.ajax({
@@ -28,19 +27,19 @@ function getValue() {
             }
             else {
                 output.innerHTML = "Try again soon";
-                $("#alien").attr("src", "images/mgs.png");
+                $("#alien").attr("src", "images/error.png");
                 soundError.play();
             }
         })
             .fail(function (error) {
             if (error.status == "404") {
                 output.innerHTML = "User not found";
-                $("#alien").attr("src", "images/mgs.png");
+                $("#alien").attr("src", "images/error.png");
                 soundError.play();
             }
             else {
                 output.innerHTML = "Try again soon";
-                $("#alien").attr("src", "images/mgs.png");
+                $("#alien").attr("src", "images/error.png");
                 soundError.play();
             }
             console.log(error.getAllResponseHeaders());
@@ -56,8 +55,17 @@ function getValue() {
             output.innerHTML = "User has no comments";
             $("button").attr("id", "button");
             $("button").css("background-color", "#ff0000");
-            $("#alien").attr("src", "images/mgs.png");
+            $("#alien").attr("src", "images/error.png");
             soundError.play();
+            return;
+        }
+        else if (userAccount.value == "Snake" || userAccount.value == "snake") {
+            $("button").attr("id", "button");
+            $("button").css("background-color", "#ff0000");
+            $("#alien").attr("src", "images/mgs.png");
+            output.innerHTML = "Have at you Snake!";
+            console.log("What was that noise?");
+            soundAlert.play();
             return;
         }
         else if (length < counter) {
@@ -88,15 +96,21 @@ function analysis(param) {
         };
         $.ajax(settings).done(function (response) {
             callback(response);
+        })
+            .fail(function (error) {
+            output.innerHTML = "Try again soon";
+            $("#alien").attr("src", "images/error.png");
+            soundError.play();
+            console.log(error.getAllResponseHeaders());
+            $("button").attr("id", "button");
+            $("button").css("background-color", "#ff0000");
         });
     }
     sendAgeRequest(file, function (data) {
         if (data.output.result == "male") {
-            console.log("working");
             gender = "male";
         }
         else {
-            console.log("working");
             gender = "female";
         }
     });
@@ -116,6 +130,14 @@ function analysis(param) {
         };
         $.ajax(settings).done(function (response) {
             callback(response);
+        })
+            .fail(function (error) {
+            output.innerHTML = "Try again soon";
+            $("#alien").attr("src", "images/error.png");
+            soundError.play();
+            console.log(error.getAllResponseHeaders());
+            $("button").attr("id", "button");
+            $("button").css("background-color", "#ff0000");
         });
     }
     sendSentimentRequest(file, function (data) {
@@ -134,7 +156,6 @@ function analysis(param) {
 }
 function writeResult() {
     var ending = "";
-    console.log(sentiment);
     if (gender == "male") {
         ending = "MALE";
     }
@@ -169,6 +190,7 @@ $('#userInput').keypress(function (e) {
         e.preventDefault();
     }
 });
+//Makes button pulse while waiting for results
 function buttonColor() {
     $("button").attr("id", "buttonloading");
 }

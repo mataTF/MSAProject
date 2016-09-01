@@ -10,13 +10,12 @@ var soundNeutral = new Audio("audio/neu.wav");
 var soundAlert = new Audio("audio/alert.wav");
 
 function getValue(){
-
     var userAccount : HTMLInputElement = <HTMLInputElement> document.getElementById("userInput");
-    buttonColor();
-    output.innerHTML = "Analyzing Reddit account...";
-    feelsOutput.innerHTML = "";
 
-    //Called when user clicks the button
+    buttonColor();
+
+    output.innerHTML = "Analyzing Reddit account...";       //Reset outputs
+    feelsOutput.innerHTML = "";
 
     function sendRedditRequest(file, callback) : void {
         //Request latest comments from a reddit user. User is defined by input from the textbox
@@ -32,91 +31,106 @@ function getValue(){
             }
             else {
                 output.innerHTML = "Try again soon";
-                $("#alien").attr("src","images/mgs.png");
+                $("#alien").attr("src","images/error.png");
                 soundError.play();
             }
         })
         .fail(function (error) {
             if(error.status == "404"){
                 output.innerHTML = "User not found";
-                $("#alien").attr("src","images/mgs.png");
+                $("#alien").attr("src","images/error.png");
                 soundError.play();
 
             }
             else {
                 output.innerHTML = "Try again soon";
-                $("#alien").attr("src","images/mgs.png");
+                $("#alien").attr("src","images/error.png");
                 soundError.play();
             }
+
             console.log(error.getAllResponseHeaders());
             $("button").attr("id","button");
             $("button").css("background-color","#ff0000");
-});
+        });
     }
 
-    sendRedditRequest(file,function(data){
-        //Call request function and put all comment data into one big string for analysis
-        var counter: number = 12;
-        var length: number = data.data.children.length;
-        if(length == 0){                                    //just incase the user has less than 12 comments or no comments at all
-            output.innerHTML = "User has no comments";
+        sendRedditRequest(file,function(data){
+            //Call request function and put all comment data into one big string for analysis
+            var counter: number = 12;
+            var length: number = data.data.children.length;
+            if(length == 0){                                    //just incase the user has less than 12 comments or no comments at all
+                output.innerHTML = "User has no comments";
 
-            $("button").attr("id","button");
-            $("button").css("background-color","#ff0000");
-            $("#alien").attr("src","images/mgs.png");
-            soundError.play();
-            return;            
-        }
-        else if(length<counter){
-            counter = data.data.children.length;
-        }
-
-        for(var i = 0; i<counter; i++){
-                var temp: string = data.data.children[i].data.body;
-                var results: string = results + " " + temp;
-                }
-
-        analysis(results);
-    });
-};
-
-function analysis(param){
-
-    function sendAgeRequest(file, callback) : void {
-
-        var settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": "http://api.datumbox.com/1.0/GenderDetection.json",
-            "method": "POST",
-            "headers": {
-                "content-type": "application/x-www-form-urlencoded"
-            },
-            "data": {
-                "text": param,
-                "api_key": "dfd1797a759929a7a7a7b23970f18c44"
+                $("button").attr("id","button");
+                $("button").css("background-color","#ff0000");
+                $("#alien").attr("src","images/error.png");
+                soundError.play();
+                return;            
             }
-        }
+            else if(userAccount.value == "Snake"||userAccount.value == "snake"){
+                $("button").attr("id","button");
+                $("button").css("background-color","#ff0000");
+                $("#alien").attr("src","images/mgs.png");
+                output.innerHTML = "Have at you Snake!";
+                console.log("What was that noise?");
+                soundAlert.play();
+                return;
+            }
+            else if(length<counter){
+                counter = data.data.children.length;
+            }
 
-$.ajax(settings).done(function (response) {
-  callback(response);
-});
-    }
-    sendAgeRequest(file, function(data){
-        
-        if(data.output.result == "male"){
-            console.log("working");
-            gender = "male";
-        }
-        else{
-            console.log("working");
-            gender = "female";
-        }
+            for(var i = 0; i<counter; i++){
+                    var temp: string = data.data.children[i].data.body;
+                    var results: string = results + " " + temp;
+                    }
 
+            analysis(results);
+        });
+    };
+
+    function analysis(param){
+
+        function sendAgeRequest(file, callback) : void {
+
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "http://api.datumbox.com/1.0/GenderDetection.json",
+                "method": "POST",
+                "headers": {
+                    "content-type": "application/x-www-form-urlencoded"
+                },
+                "data": {
+                    "text": param,
+                    "api_key": "dfd1797a759929a7a7a7b23970f18c44"
+                }
+            }
+
+            $.ajax(settings).done(function (response) {
+            callback(response);
+            })
+            .fail(function (error) {
+                output.innerHTML = "Try again soon";
+                $("#alien").attr("src","images/error.png");
+                soundError.play();
+                console.log(error.getAllResponseHeaders());
+                $("button").attr("id","button");
+                $("button").css("background-color","#ff0000");
+            });
         }
-    );  
+        sendAgeRequest(file, function(data){
+            
+            if(data.output.result == "male"){
+                gender = "male";
+            }
+            else{
+                gender = "female";
+            }
+
+        });  
         
-function sendSentimentRequest(file, callback) : void {
+    function sendSentimentRequest(file, callback) : void {
 
         var settings = {
             "async": true,
@@ -132,9 +146,17 @@ function sendSentimentRequest(file, callback) : void {
             }
         }
 
-$.ajax(settings).done(function (response) {
-  callback(response);
-});
+        $.ajax(settings).done(function (response) {
+        callback(response);
+        })
+        .fail(function (error) {
+                    output.innerHTML = "Try again soon";
+                    $("#alien").attr("src","images/error.png");
+                    soundError.play();
+                    console.log(error.getAllResponseHeaders());
+                    $("button").attr("id","button");
+                    $("button").css("background-color","#ff0000");
+        });
     }
     sendSentimentRequest(file, function(data){
         
@@ -158,7 +180,6 @@ $.ajax(settings).done(function (response) {
 function writeResult() {
     var ending: string = "";
 
-    console.log(sentiment);
     if(gender == "male"){
         
         ending = "MALE";
@@ -200,6 +221,7 @@ $('#userInput').keypress(function(e) {
     }
 });
 
+//Makes button pulse while waiting for results
 function buttonColor(){
     $("button").attr("id","buttonloading");
 }
