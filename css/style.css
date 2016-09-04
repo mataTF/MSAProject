@@ -60,7 +60,6 @@ img#alien{
 #fbshare{
     font-size: 11px;
     display: none;
-    vertical-align: baseline !important;
 }
 
 /* Responsive Structure */
@@ -91,14 +90,17 @@ img#alien{
 
     img#alien{
         position: relative;
-        width:50px;
-        height:50px;
+        width:75px;
+        height:75px;
         float: left;
-        margin-left:45%;
+        margin-left:2.5%;
+
     }
 
     #inputDiv{
         margin: 2.5% 5% 2.5% 5%;
+        width:70%;
+        float:left;
     }
 }
 @media (max-width: 550px) {
@@ -136,6 +138,7 @@ img#alien{
 
     #inputDiv{
         margin: 2.5% 2.5% 2.5% 2.5%;
+        width: auto;
     }
 }
 
