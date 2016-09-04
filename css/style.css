@@ -60,6 +60,7 @@ img#alien{
 #fbshare{
     font-size: 11px;
     display: none;
+    vertical-align: baseline;
 }
 
 /* Responsive Structure */
