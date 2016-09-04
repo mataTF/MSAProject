@@ -15,6 +15,7 @@ function getValue() : void{
 
     output.innerHTML = "Analyzing Reddit account...";       //Reset outputs
     feelsOutput.innerHTML = "";
+    $("#fbshare").css("display", "none");
 
     function sendRedditRequest(file, callback) : void {
         //Request latest comments from a reddit user. User is defined by input from the textbox
@@ -191,6 +192,7 @@ function writeResult() : void {
     output.innerHTML = "You write like a " + ending;
     $("button").attr("id","button");
     $("button").css("background-color","#69BE28");
+    $("#fbshare").css("display", "inline");
 }
 
 function feelsResult() : void {

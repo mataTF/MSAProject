@@ -57,6 +57,11 @@ img#alien{
     margin-bottom: 2.5%;
 }
 
+#fbshare{
+    font-size: 11px;
+    display: none;
+}
+
 /* Responsive Structure */
 @media (max-width: 750px) {
     h1 {
