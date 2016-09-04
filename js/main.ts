@@ -9,9 +9,8 @@ var soundNegative = new Audio("audio/neg.wav");
 var soundNeutral = new Audio("audio/neu.wav");
 var soundAlert = new Audio("audio/alert.wav");
 
-function getValue(){
+function getValue() : void{
     var userAccount : HTMLInputElement = <HTMLInputElement> document.getElementById("userInput");
-
     buttonColor();
 
     output.innerHTML = "Analyzing Reddit account...";       //Reset outputs
@@ -89,7 +88,7 @@ function getValue(){
         });
     };
 
-    function analysis(param){
+    function analysis(param) : void{
 
         function sendAgeRequest(file, callback) : void {
 
@@ -119,7 +118,7 @@ function getValue(){
                 $("button").css("background-color","#ff0000");
             });
         }
-        sendAgeRequest(file, function(data){
+        sendAgeRequest(file, function(data) : void{
             
             if(data.output.result == "male"){
                 gender = "male";
@@ -177,7 +176,7 @@ function getValue(){
     }); 
 }
 
-function writeResult() {
+function writeResult() : void {
     var ending: string = "";
 
     if(gender == "male"){
@@ -194,7 +193,7 @@ function writeResult() {
     $("button").css("background-color","#69BE28");
 }
 
-function feelsResult(){
+function feelsResult() : void {
     if(sentiment == "positive"){
         feelsOutput.innerHTML = "Feels Rating: POSITIVE";
         $("#alien").attr("src","images/reddit.png");
@@ -222,6 +221,6 @@ $('#userInput').keypress(function(e) {
 });
 
 //Makes button pulse while waiting for results
-function buttonColor(){
+function buttonColor() : void {
     $("button").attr("id","buttonloading");
 }

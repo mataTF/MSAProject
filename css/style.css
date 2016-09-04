@@ -50,17 +50,6 @@ img#alien{
     margin-left:2.5%;
 }
 
-img#mgs{
-    position: absolute;
-    top: -45%;
-    left: 64.8%;
-    width:50px;
-    height:50px;
-    float: left;
-    margin-left:2.5%;
-    display: none;
-}
-
 #inputDiv{
     float: left;
     margin-left: 30%;
@@ -102,17 +91,6 @@ img#mgs{
         margin-left:45%;
     }
 
-    img#mgs{
-        position: absolute;
-        top: -45%;
-        left: 64.8%;
-        width:50px;
-        height:50px;
-        float: left;
-        margin-left:2.5%;
-        display: none;
-    }
-
     #inputDiv{
         margin: 2.5% 5% 2.5% 5%;
     }
@@ -148,17 +126,6 @@ img#mgs{
         height:50px;
         float: left;
         margin-left:45%;
-    }
-
-    img#mgs{
-        position: absolute;
-        top: -45%;
-        left: 64.8%;
-        width:50px;
-        height:50px;
-        float: left;
-        margin-left:2.5%;
-        display: none;
     }
 
     #inputDiv{
