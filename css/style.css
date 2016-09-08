@@ -62,6 +62,11 @@ img#alien{
     display: none;
 }
 
+.fb_iframe_widget span{
+    min-width:60px!important;
+    vertical-align:top!important;
+} 
+
 /* Responsive Structure */
 @media (max-width: 750px) {
     h1 {
