@@ -59,6 +59,8 @@ img#alien{
 
 #fbshare{
     font-size: 11px;
+    width:58px!important;
+    height:20px!important;
     display: none;
 }
 
