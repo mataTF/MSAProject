@@ -13,9 +13,8 @@ function getValue() {
     buttonColor();
     output.innerHTML = "Analyzing Reddit account..."; //Reset outputs
     feelsOutput.innerHTML = "";
-    //$("#fbshare").css("display", "none");
+    //Request latest comments from a reddit user. User is defined by input from the textbox
     function sendRedditRequest(file, callback) {
-        //Request latest comments from a reddit user. User is defined by input from the textbox
         $.ajax({
             url: "https://www.reddit.com/user/" + userAccount.value + "/comments/.json",
             type: "GET",
@@ -28,36 +27,29 @@ function getValue() {
             }
             else {
                 output.innerHTML = "Try again soon";
-                $("#alien").attr("src", "images/error.png");
-                soundError.play();
+                errorUI();
             }
         })
             .fail(function (error) {
+            //So the user knows if a user doesnt exist
             if (error.status == "404") {
                 output.innerHTML = "User not found";
-                $("#alien").attr("src", "images/error.png");
-                soundError.play();
             }
             else {
                 output.innerHTML = "Try again soon";
-                $("#alien").attr("src", "images/error.png");
-                soundError.play();
             }
             console.log(error.getAllResponseHeaders());
-            $("button").attr("id", "button");
-            $("button").css("background-color", "#ff0000");
+            errorUI();
         });
     }
+    //Call request function and put all comment data into one big string for analysis
     sendRedditRequest(file, function (data) {
-        //Call request function and put all comment data into one big string for analysis
         var counter = 12;
         var length = data.data.children.length;
+        //Just incase the user has less than 12 comments or no comments at all
         if (length == 0) {
             output.innerHTML = "User has no comments";
-            $("button").attr("id", "button");
-            $("button").css("background-color", "#ff0000");
-            $("#alien").attr("src", "images/error.png");
-            soundError.play();
+            errorUI();
             return;
         }
         else if (userAccount.value == "Snake" || userAccount.value == "snake") {
@@ -72,6 +64,7 @@ function getValue() {
         else if (length < counter) {
             counter = data.data.children.length;
         }
+        //Concatenates comments into one big string
         for (var i = 0; i < counter; i++) {
             var temp = data.data.children[i].data.body;
             var results = results + " " + temp;
@@ -80,6 +73,7 @@ function getValue() {
     });
 }
 ;
+//Sends passed in string to sentiment and gender analysis APIs
 function analysis(param) {
     function sendAgeRequest(file, callback) {
         var settings = {
@@ -100,11 +94,8 @@ function analysis(param) {
         })
             .fail(function (error) {
             output.innerHTML = "Try again soon";
-            $("#alien").attr("src", "images/error.png");
-            soundError.play();
             console.log(error.getAllResponseHeaders());
-            $("button").attr("id", "button");
-            $("button").css("background-color", "#ff0000");
+            errorUI();
         });
     }
     sendAgeRequest(file, function (data) {
@@ -134,11 +125,8 @@ function analysis(param) {
         })
             .fail(function (error) {
             output.innerHTML = "Try again soon";
-            $("#alien").attr("src", "images/error.png");
-            soundError.play();
+            errorUI();
             console.log(error.getAllResponseHeaders());
-            $("button").attr("id", "button");
-            $("button").css("background-color", "#ff0000");
         });
     }
     sendSentimentRequest(file, function (data) {
@@ -166,7 +154,6 @@ function writeResult() {
     output.innerHTML = "You write like a " + ending;
     $("button").attr("id", "button");
     $("button").css("background-color", "#69BE28");
-    //$("#fbshare").css("display", "inline");
 }
 function feelsResult() {
     if (sentiment == "positive") {
@@ -185,7 +172,7 @@ function feelsResult() {
         soundNeutral.play();
     }
 }
-//So you can press enter as well as clicking the button
+//So user can press enter instead of clicking button
 $('#userInput').keypress(function (e) {
     if (e.which == 13) {
         getValue();
@@ -195,4 +182,11 @@ $('#userInput').keypress(function (e) {
 //Makes button pulse while waiting for results
 function buttonColor() {
     $("button").attr("id", "buttonloading");
+}
+//Actions when an error occurs
+function errorUI() {
+    $("#alien").attr("src", "images/error.png");
+    soundError.play();
+    $("button").attr("id", "button");
+    $("button").css("background-color", "#ff0000");
 }
