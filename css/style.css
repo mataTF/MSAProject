@@ -63,7 +63,8 @@ img#alien{
 }
 
 #fbshare span{
-    min-width:60px!important;
+    width:58px!important;
+    height:20px!important;
     vertical-align:top!important;
 } 
 
