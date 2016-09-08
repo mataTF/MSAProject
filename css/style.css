@@ -62,7 +62,7 @@ img#alien{
     display: none;
 }
 
-.fb_iframe_widget span{
+.fb-share-button fb_iframe_widget span{
     min-width:60px!important;
     vertical-align:top!important;
 } 
